@@ -15,7 +15,7 @@ class ProductStorage {
     }
   }
 
-  static async createBasicProduct(conn, brandId, productBasicInfo) {
+  static async createProductBasic(conn, brandId, productBasicInfo) {
     try {
       const query = `
         INSERT INTO products

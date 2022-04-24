@@ -57,7 +57,7 @@ class Product {
         return makeResponse(404, '존재하지 않는 브랜드입니다.');
       }
 
-      const productId = await ProductStorage.createBasicProduct(
+      const productId = await ProductStorage.createProductBasic(
         conn,
         brandId,
         productBasicInfo
