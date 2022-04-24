@@ -6,7 +6,7 @@ class ProductStorage {
   static async findOneByBrandId(conn, brandId) {
     try {
       const query = `
-        ELECT * FROM brands
+        SELECT * FROM brands
         WHERE id = ?;`;
 
       const brand = await conn.query(query, [brandId]);
