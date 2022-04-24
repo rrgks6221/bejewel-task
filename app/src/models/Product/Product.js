@@ -26,12 +26,12 @@ class Product {
       discountRate: this.body.discountRate || 0,
     };
     const productMoreInfo = {
-      material: this.body.material,
-      color: this.body.color,
-      patten: this.body.patten,
-      shape: this.body.shape,
-      size: this.body.size,
-      weight: this.body.weight,
+      material: this.body.material.join(' '),
+      color: this.body.color.join(' '),
+      patten: this.body.patten.join(' '),
+      shape: this.body.shape.join(' '),
+      size: this.body.size.join(' '),
+      weight: this.body.weight.join(' '),
     };
 
     const isValidation = validation(
@@ -64,8 +64,24 @@ class Product {
       );
 
       if (!productId) {
-        return makeResponse(400, '값의 형식이 잘못되었습니다.');
+        await conn.rollback();
+
+        return makeResponse(400, '타입 오류로 상품 등록에 실패했습니다.');
       }
+
+      const isCreateAdd = await ProductStorage.createProductAdd(
+        conn,
+        productId,
+        productMoreInfo
+      );
+
+      if (!isCreateAdd) {
+        await conn.rollback();
+
+        return makeResponse(400, '타입 오류로 상품 등록에 실패했습니다.');
+      }
+
+      await conn.commit();
 
       return brand;
     } catch (err) {
