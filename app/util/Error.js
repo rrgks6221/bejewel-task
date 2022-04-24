@@ -4,7 +4,7 @@ class Error {
   static ctrl(err) {
     return {
       success: false,
-      clientMsg: err.message,
+      clientMsg: '서버 에러입니다. 서버 개발자에게 문의해주세요.',
       err: err.stack,
       status: err.status,
     };

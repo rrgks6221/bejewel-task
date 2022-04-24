@@ -1,17 +1,19 @@
 'use strict';
 
+const createError = require('http-errors');
+
 class ProductStorage {
   static async findOneByBrandId(conn, brandId) {
     try {
       const query = `
-        SELECT * FROM brands
+        ELECT * FROM brands
         WHERE id = ?;`;
 
       const brand = await conn.query(query, [brandId]);
 
       return brand[0];
     } catch (err) {
-      throw err;
+      throw createError(500, err);
     }
   }
 
@@ -24,7 +26,7 @@ class ProductStorage {
 
       return category[0];
     } catch (err) {
-      throw err;
+      throw createError(500, err);
     }
   }
 
@@ -48,7 +50,7 @@ class ProductStorage {
       if (isCreate[0].warningStatus) return 0;
       return isCreate[0].insertId;
     } catch (err) {
-      throw err;
+      throw createError(500, err);
     }
   }
 
@@ -73,7 +75,7 @@ class ProductStorage {
       if (isCreate[0].warningStatus) return 0;
       return isCreate[0].affectedRows;
     } catch (err) {
-      throw err;
+      throw createError(500, err);
     }
   }
 
@@ -89,7 +91,7 @@ class ProductStorage {
 
       return isCreate[0].affectedRows;
     } catch (err) {
-      throw err;
+      throw createError(500, err);
     }
   }
 }
