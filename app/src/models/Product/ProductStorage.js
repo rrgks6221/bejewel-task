@@ -32,6 +32,7 @@ class ProductStorage {
         productBasicInfo.discountRate,
       ]);
 
+      if (isCreate[0].warningStatus) return 0;
       return isCreate[0].insertId;
     } catch (err) {
       throw err;

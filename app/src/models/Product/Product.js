@@ -63,6 +63,10 @@ class Product {
         productBasicInfo
       );
 
+      if (!productId) {
+        return makeResponse(400, '값의 형식이 잘못되었습니다.');
+      }
+
       return brand;
     } catch (err) {
       console.log(err);
