@@ -26,12 +26,12 @@ class Product {
       discountRate: this.body.discountRate || 0,
     };
     const productMoreInfo = {
-      material: this.body.material.join(' '),
-      color: this.body.color.join(' '),
-      patten: this.body.patten.join(' '),
-      shape: this.body.shape.join(' '),
-      size: this.body.size.join(' '),
-      weight: this.body.weight.join(' '),
+      material: this.body.material && String(this.body.material),
+      color: this.body.color && String(this.body.color),
+      patten: this.body.patten && String(this.body.patten),
+      shape: this.body.shape && String(this.body.shape),
+      size: this.body.size && String(this.body.size),
+      weight: this.body.weight && String(this.body.weight),
     };
 
     const isValidation = validation(
