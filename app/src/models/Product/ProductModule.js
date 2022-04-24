@@ -14,6 +14,12 @@ class ProductModule {
   static getToSaveCategories(productId, saveCategories) {
     return saveCategories.map((category) => [productId, category]);
   }
+
+  static getToSaveOptions(productId, saveOptions) {
+    return saveOptions.map((option) => {
+      return [productId, option.name, option.addPrice];
+    });
+  }
 }
 
 module.exports = ProductModule;

@@ -107,15 +107,35 @@ class Product {
         this.body.categories
       );
 
-      const isCreateCategory = await ProductStorage.createProductCategory(
-        conn,
-        toSaveCategories
+      if (toSaveCategories.length) {
+        const isCreateCategory = await ProductStorage.createProductCategory(
+          conn,
+          toSaveCategories
+        );
+
+        if (isCreateCategory !== toSaveCategories.length) {
+          await conn.rollback();
+
+          throw createError(502, 'Bad GateWay');
+        }
+      }
+
+      const toSaveOptions = ProductModule.getToSaveOptions(
+        productId,
+        this.body.options
       );
 
-      if (isCreateCategory !== toSaveCategories.length) {
-        await conn.rollback();
+      if (toSaveOptions.length) {
+        const isCreateOption = await ProductStorage.createProductOption(
+          conn,
+          toSaveOptions
+        );
 
-        throw createError(502, 'Bad GateWay');
+        if (isCreateOption !== toSaveOptions.length) {
+          await conn.rollback();
+
+          throw createError(502, 'Bad GateWay');
+        }
       }
 
       await conn.commit();

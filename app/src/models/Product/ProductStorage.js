@@ -94,6 +94,22 @@ class ProductStorage {
       throw createError(500, err);
     }
   }
+
+  static async createProductOption(conn, options) {
+    try {
+      const query = `
+      INSERT INTO product_options
+      (product_id, option_name, add_price)
+      VALUES
+      ?;`;
+
+      const isCreate = await conn.query(query, [options]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
 }
 
 module.exports = ProductStorage;
