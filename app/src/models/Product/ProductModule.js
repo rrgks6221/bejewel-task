@@ -10,6 +10,10 @@ class ProductModule {
 
     return notExistCategories;
   }
+
+  static getToSaveCategories(productId, saveCategories) {
+    return saveCategories.map((category) => [productId, category]);
+  }
 }
 
 module.exports = ProductModule;

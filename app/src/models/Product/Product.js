@@ -100,9 +100,10 @@ class Product {
         );
       }
 
-      const toSaveCategories = this.body.categories.map((category) => {
-        return [productId, category];
-      });
+      const toSaveCategories = ProductModule.getToSaveCategories(
+        productId,
+        this.body.categories
+      );
 
       const isCreateCategory = await ProductStorage.createProductCategory(
         conn,
