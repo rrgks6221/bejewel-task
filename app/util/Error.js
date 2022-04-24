@@ -1,12 +1,12 @@
 'use strict';
 
 class Error {
-  static ctrl(status, err, msg) {
+  static ctrl(err) {
     return {
       success: false,
-      msg,
-      err,
-      status,
+      clientMsg: err.message,
+      err: err.stack,
+      status: err.status,
     };
   }
 }

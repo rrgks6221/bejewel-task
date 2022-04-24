@@ -1,13 +1,15 @@
 'use strict';
 
+const createError = require('http-errors');
+
 const pool = require('../../../config/db');
 
 const ProductStorage = require('./ProductStorage');
+const ProductModule = require('./ProductModule');
 const Error = require('../../../util/Error');
 
 const makeResponse = require('../../../util/makeResponse');
 const validation = require('../../../util/validation');
-const ProductModule = require('./ProductModule');
 
 class Product {
   constructor(req) {
@@ -113,11 +115,7 @@ class Product {
       if (isCreateCategory !== toSaveCategories.length) {
         await conn.rollback();
 
-        return Error.ctrl(
-          502,
-          'Bad GateWay',
-          '서버 에러입니다. 서버 개발자에게 문의해주세요'
-        );
+        throw createError(502, 'Bad GateWay');
       }
 
       await conn.commit();
@@ -128,11 +126,7 @@ class Product {
 
       await conn.rollback();
 
-      return Error.ctrl(
-        500,
-        err,
-        '서버 에러입니다. 서버 개발자에게 문의해주세요.'
-      );
+      return Error.ctrl(err);
     } finally {
       conn.release();
     }
