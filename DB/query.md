@@ -59,7 +59,7 @@
     id INT(11) NOT NULL AUTO_INCREMENT,
     brand_id INT(11) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    desciption TEXT NOT NULL,
+    description TEXT NOT NULL,
     price INT(11) NOT NULL,
     shipping_fee INT(11) DEFAULT 0 NOT NULL,
     discount_rate INT(11) DEFAULT 0 NOT NULL,
