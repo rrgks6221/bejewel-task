@@ -15,6 +15,19 @@ class ProductStorage {
     }
   }
 
+  static async findAllProductCategory(conn) {
+    try {
+      const query = `
+        SELECT id FROM product_category_list;`;
+
+      const category = await conn.query(query);
+
+      return category[0];
+    } catch (err) {
+      throw err;
+    }
+  }
+
   static async createProductBasic(conn, brandId, productBasicInfo) {
     try {
       const query = `
@@ -58,6 +71,22 @@ class ProductStorage {
       ]);
 
       if (isCreate[0].warningStatus) return 0;
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  static async createProductCategory(conn, categories) {
+    try {
+      const query = `
+        INSERT INTO product_categories
+        (product_id, product_category_list_id)
+        VALUES
+        ?;`;
+
+      const isCreate = await conn.query(query, [categories]);
+
       return isCreate[0].affectedRows;
     } catch (err) {
       throw err;

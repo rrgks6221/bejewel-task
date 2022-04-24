@@ -7,6 +7,7 @@ const Error = require('../../../util/Error');
 
 const makeResponse = require('../../../util/makeResponse');
 const validation = require('../../../util/validation');
+const ProductModule = require('./ProductModule');
 
 class Product {
   constructor(req) {
@@ -79,6 +80,43 @@ class Product {
         await conn.rollback();
 
         return makeResponse(400, '타입 오류로 상품 등록에 실패했습니다.');
+      }
+
+      const presentCategories = await ProductStorage.findAllProductCategory(
+        conn
+      );
+
+      const notExistCategories = ProductModule.getNotExistCategories(
+        presentCategories,
+        this.body.categories
+      );
+
+      if (notExistCategories.length) {
+        await conn.rollback();
+
+        return makeResponse(
+          400,
+          `${notExistCategories}은(는) 존재하지 않는 카테고리번호 입니다.`
+        );
+      }
+
+      const toSaveCategories = this.body.categories.map((category) => {
+        return [productId, category];
+      });
+
+      const isCreateCategory = await ProductStorage.createProductCategory(
+        conn,
+        toSaveCategories
+      );
+
+      if (isCreateCategory !== toSaveCategories.length) {
+        await conn.rollback();
+
+        return Error.ctrl(
+          502,
+          'Bad GateWay',
+          '서버 에러입니다. 서버 개발자에게 문의해주세요'
+        );
       }
 
       await conn.commit();
