@@ -252,7 +252,93 @@ class ProductStorage {
 
       return isCreate[0].affectedRows;
     } catch (err) {
-      console.log(err);
+      throw createError(500, err);
+    }
+  }
+
+  static async updateProductBasicById(conn, productId, productBasicInfo) {
+    try {
+      const query = `
+        UPDATE products
+        SET name = ?, description = ?, price = ?, shipping_fee = ?, discount_rate = ?
+        WHERE id = ?;`;
+
+      const isUpdate = await conn.query(query, [
+        productBasicInfo.name,
+        productBasicInfo.description,
+        productBasicInfo.price,
+        productBasicInfo.shippingFee,
+        productBasicInfo.discountRate,
+        productId,
+      ]);
+
+      return isUpdate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async updateProductAddById(conn, productId, productMoreInfo) {
+    try {
+      const query = `
+        UPDATE product_more_informations
+        SET material = ?, color = ?, patten = ?, shape = ?, size = ?, weight = ?
+        WHERE product_id = ?;`;
+
+      const isUpdate = await conn.query(query, [
+        productMoreInfo.material,
+        productMoreInfo.color,
+        productMoreInfo.patten,
+        productMoreInfo.shape,
+        productMoreInfo.size,
+        productMoreInfo.weight,
+        productId,
+      ]);
+
+      return isUpdate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductCategoryById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_categories
+        WHERE product_id = ?`;
+
+      const isDelete = await conn.query(query, [productId]);
+
+      return isDelete[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductOptionById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_options
+        WHERE product_id = ?`;
+
+      const isDelete = await conn.query(query, [productId]);
+
+      return isDelete[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductImageById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_images
+        WHERE product_id = ?`;
+
+      const isDelete = await conn.query(query, [productId]);
+
+      return isDelete[0].affectedRows;
+    } catch (err) {
       throw createError(500, err);
     }
   }

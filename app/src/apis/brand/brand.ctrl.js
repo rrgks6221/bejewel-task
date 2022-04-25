@@ -28,6 +28,22 @@ const process = {
 
     return processCtrl(res, response);
   },
+
+  updateProductById: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.updateProductById();
+
+    return processCtrl(res, response);
+  },
+
+  deleteProductImageById: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.deleteProductImageById();
+
+    return processCtrl(res, response);
+  },
 };
 
 module.exports = process;
