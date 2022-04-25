@@ -13,6 +13,6 @@ app.use(cors());
 
 const product = require('./src/apis/product');
 
-app.use('/api', product);
+app.use('/api/brand', product);
 
 module.exports = app;

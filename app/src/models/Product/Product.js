@@ -140,7 +140,7 @@ class Product {
 
       await conn.commit();
 
-      return brand;
+      return makeResponse(201, '상품 등록에 성공했습니다.');
     } catch (err) {
       console.log(err);
 
