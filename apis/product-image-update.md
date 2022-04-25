@@ -15,7 +15,7 @@
 - Request
 
 **URL : /api/brand/:brandId/product/:productId/image** ex)`/api/brand/1/product/13/image`<br>
-**Method : POST** <br>
+**Method : PUT** <br>
 **Headers :** "Content-type" : "multipart/form-data;"
 
 <br>
