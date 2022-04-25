@@ -252,7 +252,79 @@ class ProductStorage {
 
       return isCreate[0].affectedRows;
     } catch (err) {
-      console.log(err);
+      throw createError(500, err);
+    }
+  }
+
+  static async updateProductBasicById(conn, productId, productBasicInfo) {
+    try {
+      const query = `
+        UPDATE products
+        SET name = ?, description = ?, price = ?, shipping_fee = ?, discount_rate = ?
+        WHERE id = ?;`;
+
+      const isCreate = await conn.query(query, [
+        productBasicInfo.name,
+        productBasicInfo.description,
+        productBasicInfo.price,
+        productBasicInfo.shippingFee,
+        productBasicInfo.discountRate,
+        productId,
+      ]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async updateProductAddById(conn, productId, productMoreInfo) {
+    try {
+      const query = `
+        UPDATE product_more_informations
+        SET material = ?, color = ?, patten = ?, shape = ?, size = ?, weight = ?
+        WHERE product_id = ?;`;
+
+      const isCreate = await conn.query(query, [
+        productMoreInfo.material,
+        productMoreInfo.color,
+        productMoreInfo.patten,
+        productMoreInfo.shape,
+        productMoreInfo.size,
+        productMoreInfo.weight,
+        productId,
+      ]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductCategoryById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_categories
+        WHERE product_id = ?`;
+
+      const isCreate = await conn.query(query, [productId]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductOptionById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_options
+        WHERE product_id = ?`;
+
+      const isCreate = await conn.query(query, [productId]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
       throw createError(500, err);
     }
   }

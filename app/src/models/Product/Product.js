@@ -258,6 +258,148 @@ class Product {
       conn.release();
     }
   }
+
+  async updateProductById() {
+    const conn = await pool.getConnection();
+
+    const { brandId } = this.params;
+    const { productId } = this.params;
+    const productBasicInfo = {
+      name: this.body.name,
+      description: this.body.description,
+      price: this.body.price,
+      shippingFee: this.body.shippingFee || 0,
+      discountRate: this.body.discountRate || 0,
+    };
+    const productMoreInfo = {
+      material: this.body.material && String(this.body.material),
+      color: this.body.color && String(this.body.color),
+      patten: this.body.patten && String(this.body.patten),
+      shape: this.body.shape && String(this.body.shape),
+      size: this.body.size && String(this.body.size),
+      weight: this.body.weight && String(this.body.weight),
+    };
+
+    const isValidation = validation(
+      ['name', 'description', 'price'],
+      this.body
+    );
+
+    if (!isValidation.success) {
+      return makeResponse(
+        400,
+        `${isValidation.emptyKey}은(는) 필수로 입력해야 합니다.`
+      );
+    }
+
+    try {
+      await conn.beginTransaction();
+
+      const product = await ProductStorage.findOneByProductId(
+        conn,
+        productId,
+        brandId
+      );
+
+      if (!product.length) {
+        return makeResponse(404, '해당 상품이 존재하지 않습니다.');
+      }
+
+      const isUpdateBasic = await ProductStorage.updateProductBasicById(
+        conn,
+        productId,
+        productBasicInfo
+      );
+
+      if (!isUpdateBasic) {
+        await conn.rollback();
+
+        return makeResponse(400, '타입 오류로 상품 수정에 실패했습니다.');
+      }
+
+      const isCreateAdd = await ProductStorage.updateProductAddById(
+        conn,
+        productId,
+        productMoreInfo
+      );
+
+      if (!isCreateAdd) {
+        await conn.rollback();
+
+        return makeResponse(400, '타입 오류로 상품 수정에 실패했습니다.');
+      }
+
+      const isDeleteCategory = await ProductStorage.deleteProductCategoryById(
+        conn,
+        productId
+      );
+
+      if (!isDeleteCategory) {
+        await conn.rollback();
+
+        throw createError(502, 'Bad GateWay');
+      }
+
+      const toSaveCategories = ProductModule.getToSaveCategories(
+        productId,
+        this.body.categories
+      );
+
+      if (toSaveCategories.length) {
+        const isCreateCategory = await ProductStorage.createProductCategory(
+          conn,
+          toSaveCategories
+        );
+
+        if (isCreateCategory !== toSaveCategories.length) {
+          await conn.rollback();
+
+          throw createError(502, 'Bad GateWay');
+        }
+      }
+
+      const isDeleteOption = await ProductStorage.deleteProductOptionById(
+        conn,
+        productId
+      );
+
+      if (!isDeleteOption) {
+        await conn.rollback();
+
+        throw createError(502, 'Bad GateWay');
+      }
+
+      const toSaveOptions = ProductModule.getToSaveOptions(
+        productId,
+        this.body.options
+      );
+
+      if (toSaveOptions.length) {
+        const isCreateOption = await ProductStorage.createProductOption(
+          conn,
+          toSaveOptions
+        );
+
+        if (isCreateOption !== toSaveOptions.length) {
+          await conn.rollback();
+
+          throw createError(502, 'Bad GateWay');
+        }
+      }
+
+      await conn.commit();
+
+      return makeResponse(200, '상품 정보를 수정하였습니다.');
+    } catch (err) {
+      console.log(err);
+
+      await conn.rollback();
+
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
 }
 
 module.exports = Product;

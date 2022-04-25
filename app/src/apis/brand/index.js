@@ -13,4 +13,6 @@ router.get('/:brandId', ctrl.findAllProductByBrand);
 router.post('/:brandId/product', ctrl.createProduct);
 router.post('/:brandId/product/:productId', imageSave, ctrl.createProductImage);
 
+router.put('/:brandId/product/:productId', ctrl.updateProductById);
+
 module.exports = router;
