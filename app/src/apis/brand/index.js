@@ -25,4 +25,6 @@ router.put(
   ctrl.deleteProductImageById
 );
 
+router.delete('/:brandId/product/:productId', ctrl.deleteProductById);
+
 module.exports = router;

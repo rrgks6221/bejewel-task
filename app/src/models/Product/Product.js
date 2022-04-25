@@ -431,6 +431,37 @@ class Product {
       conn.release();
     }
   }
+
+  async deleteProductById() {
+    const conn = await pool.getConnection();
+
+    const { brandId } = this.params;
+    const { productId } = this.params;
+
+    try {
+      const product = await ProductStorage.findOneByProductId(
+        conn,
+        productId,
+        brandId
+      );
+
+      if (!product.length) {
+        return makeResponse(404, '해당 상품이 존재하지 않습니다.');
+      }
+
+      const isDelete = await ProductStorage.deleteProductById(conn, productId);
+
+      if (!isDelete) {
+        throw createError(502, 'Bad GateWay');
+      }
+
+      return makeResponse(200, '상품 삭제에 성공했습니다.');
+    } catch (err) {
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
 }
 
 module.exports = Product;
