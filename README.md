@@ -29,7 +29,7 @@
 
 ### 서버 실행 방법
 
-> 1. git clone https://github.com/rrgks6221/sixshop-dev-task.git
+> 1. git clone https://github.com/rrgks6221/bejewel-task.git
 > 2. bejewel-task/app 경로에서 npm i
 > 3. bejewel-task/app 경로에서 npm start (개발 단계에선 npm run dev 명령으로 하는것이 일반적이나 개발의 편의성을 위해 npm start로 처리함)
 
