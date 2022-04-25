@@ -44,6 +44,14 @@ const process = {
 
     return processCtrl(res, response);
   },
+
+  deleteProductById: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.deleteProductById();
+
+    return processCtrl(res, response);
+  },
 };
 
 module.exports = process;

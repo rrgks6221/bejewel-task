@@ -342,6 +342,20 @@ class ProductStorage {
       throw createError(500, err);
     }
   }
+
+  static async deleteProductById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM products
+        WHERE id = ?`;
+
+      const isDelete = await conn.query(query, [productId]);
+
+      return isDelete[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
 }
 
 module.exports = ProductStorage;
