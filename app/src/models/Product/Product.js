@@ -20,7 +20,7 @@ class Product {
   }
 
   async createProduct() {
-    let conn;
+    const conn = await pool.getConnection();
 
     const { brandId } = this.params;
     const productBasicInfo = {
@@ -52,8 +52,6 @@ class Product {
     }
 
     try {
-      conn = await pool.getConnection();
-
       await conn.beginTransaction();
 
       const brand = await BrandStorage.findOneByBrandId(conn, brandId);
@@ -155,11 +153,9 @@ class Product {
   }
 
   async createProductImage() {
-    let conn;
+    const conn = await pool.getConnection();
 
     try {
-      conn = await pool.getConnection();
-
       const images = ProductModule.getToSaveImages(
         this.params.productId,
         this.body.images
