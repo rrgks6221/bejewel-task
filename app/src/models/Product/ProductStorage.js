@@ -33,7 +33,9 @@ class ProductStorage {
   static async findAllProductByCategory(conn, category) {
     try {
       let query = `
-        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate,
+        (SELECT path FROM product_images WHERE product_id = products.id LIMIT 1) AS imagePath
+        FROM products
         JOIN brands
         ON brands.id = brand_id`;
 
@@ -56,7 +58,9 @@ class ProductStorage {
   static async findAllProductByBrand(conn, brandId, category) {
     try {
       let query = `
-        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate,
+        (SELECT path FROM product_images WHERE product_id = products.id LIMIT 1) AS imagePath
+        FROM products
         JOIN brands
         ON brands.id = brand_id`;
 
