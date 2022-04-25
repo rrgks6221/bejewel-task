@@ -12,6 +12,14 @@ const process = {
 
     return processCtrl(res, response);
   },
+
+  findOneProductById: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.findOneProductById();
+
+    return processCtrl(res, response);
+  },
 };
 
 module.exports = process;

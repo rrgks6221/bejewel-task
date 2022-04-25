@@ -81,6 +81,80 @@ class ProductStorage {
     }
   }
 
+  static async findOneProductBasicById(conn, id) {
+    try {
+      const query = `
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
+        JOIN brands
+        ON brands.id = brand_id
+        WHERE products.id = ?`;
+
+      const product = await conn.query(query, [id]);
+
+      return product[0][0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findOneProductMoreInfoById(conn, id) {
+    try {
+      const query = `
+        SELECT material, color, patten, shape, size, weight FROM product_more_informations
+        WHERE product_id = ?`;
+
+      const product = await conn.query(query, [id]);
+
+      return product[0][0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findOneProductOptionById(conn, id) {
+    try {
+      const query = `
+        SELECT option_name AS optionName, add_price AS addPrice FROM product_options
+        WHERE product_id = ?`;
+
+      const option = await conn.query(query, [id]);
+
+      return option[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllCategoryById(conn, id) {
+    try {
+      const query = `
+        SELECT category FROM product_category_list
+        JOIN product_categories
+        ON product_categories.product_id = ?
+        WHERE product_categories.product_category_list_id = product_category_list.id`;
+
+      const categories = await conn.query(query, [id]);
+
+      return categories[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllImageById(conn, id) {
+    try {
+      const query = `
+        SELECT path FROM product_images
+        WHERE product_id = ?`;
+
+      const images = await conn.query(query, [id]);
+
+      return images[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
   static async createProductBasic(conn, brandId, productBasicInfo) {
     try {
       const query = `
