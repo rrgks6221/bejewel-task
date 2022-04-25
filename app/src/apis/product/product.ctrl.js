@@ -19,6 +19,14 @@ const process = {
 
     return res.status(response.status).json(response);
   },
+
+  createProductImage: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.createProductImage();
+
+    return res.status(200).json(response);
+  },
 };
 
 module.exports = process;

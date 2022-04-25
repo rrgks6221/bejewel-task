@@ -5,14 +5,16 @@ const createError = require('http-errors');
 const pool = require('../../../config/db');
 
 const ProductStorage = require('./ProductStorage');
+const BrandStorage = require('../../models/Brand/BrandStorage');
 const ProductModule = require('./ProductModule');
-const Error = require('../../../util/Error');
+const Error = require('../../util/Error');
 
-const makeResponse = require('../../../util/makeResponse');
-const validation = require('../../../util/validation');
+const makeResponse = require('../../util/makeResponse');
+const validation = require('../../util/validation');
 
 class Product {
   constructor(req) {
+    this.req = req;
     this.params = req.params;
     this.body = req.body;
   }
@@ -54,7 +56,7 @@ class Product {
 
       await conn.beginTransaction();
 
-      const brand = await ProductStorage.findOneByBrandId(conn, brandId);
+      const brand = await BrandStorage.findOneByBrandId(conn, brandId);
 
       if (!brand.length) {
         return makeResponse(404, '존재하지 않는 브랜드입니다.');
@@ -146,6 +148,30 @@ class Product {
 
       await conn.rollback();
 
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
+
+  async createProductImage() {
+    let conn;
+
+    try {
+      conn = await pool.getConnection();
+
+      const images = ProductModule.getToSaveImages(
+        this.params.productId,
+        this.body.images
+      );
+
+      const isCreate = await ProductStorage.createProductImages(conn, images);
+
+      if (isCreate !== images.length) {
+        throw createError(502, 'Bad GateWay');
+      }
+      return makeResponse(201, '이미지 저장에 성공했습니다.');
+    } catch (err) {
       return Error.ctrl(err);
     } finally {
       conn.release();

@@ -20,6 +20,10 @@ class ProductModule {
       return [productId, option.name, option.addPrice];
     });
   }
+
+  static getToSaveImages(productId, saveImages) {
+    return saveImages.map((image) => [productId, image]);
+  }
 }
 
 module.exports = ProductModule;
