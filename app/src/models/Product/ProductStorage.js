@@ -3,13 +3,13 @@
 const createError = require('http-errors');
 
 class ProductStorage {
-  static async findOneByBrandId(conn, brandId) {
+  static async findOneByProductId(conn, productId, brandId) {
     try {
       const query = `
-        SELECT * FROM brands
-        WHERE id = ?;`;
+        SELECT * FROM products
+        WHERE id = ? AND brand_id = ?;`;
 
-      const brand = await conn.query(query, [brandId]);
+      const brand = await conn.query(query, [productId, brandId]);
 
       return brand[0];
     } catch (err) {
@@ -107,6 +107,23 @@ class ProductStorage {
 
       return isCreate[0].affectedRows;
     } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async createProductImages(conn, images) {
+    try {
+      const query = `
+      INSERT INTO product_images
+      (product_id, path)
+      VALUES
+      ?;`;
+
+      const isCreate = await conn.query(query, [images]);
+
+      return isCreate[0].affectedRows;
+    } catch (err) {
+      console.log(err);
       throw createError(500, err);
     }
   }
