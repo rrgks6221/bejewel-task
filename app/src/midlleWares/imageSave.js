@@ -27,7 +27,7 @@ module.exports = async (req, res, next) => {
 
     if (!brand.length) {
       return res
-        .status(400)
+        .status(404)
         .json({ success: false, msg: '존재하지 않는 상품입니다.' });
     }
 
