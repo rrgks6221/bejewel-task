@@ -13,7 +13,7 @@ app.use(fileUpload({ createParentPath: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const product = require('./src/apis/product');
+const product = require('./src/apis/brand');
 
 app.use('/api/brand', product);
 
