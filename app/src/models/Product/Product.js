@@ -16,7 +16,92 @@ class Product {
   constructor(req) {
     this.req = req;
     this.params = req.params;
+    this.query = req.query;
     this.body = req.body;
+  }
+
+  async findAllProductByCategory() {
+    const conn = await pool.getConnection();
+
+    try {
+      const products = await ProductStorage.findAllProductByCategory(
+        conn,
+        this.query.category
+      );
+
+      return makeResponse(200, '카테고리별 상품 조회', { products });
+    } catch (err) {
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
+
+  async findAllProductByBrand() {
+    const conn = await pool.getConnection();
+
+    try {
+      const products = await ProductStorage.findAllProductByBrand(
+        conn,
+        this.params.brandId,
+        this.query.category
+      );
+
+      return makeResponse(200, '브랜드 카테고리별 상품 조회', { products });
+    } catch (err) {
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
+
+  async findOneProductById() {
+    const conn = await pool.getConnection();
+
+    const productId = this.params.productId;
+
+    try {
+      const product = await ProductStorage.findOneProductBasicById(
+        conn,
+        productId
+      );
+
+      if (!product) {
+        return makeResponse(404, '해당 상품이 존재하지 않습니다.');
+      }
+
+      const productMoreInfo = await ProductStorage.findOneProductMoreInfoById(
+        conn,
+        productId
+      );
+
+      for (const moreInfo in productMoreInfo) {
+        product[moreInfo] = productMoreInfo[moreInfo] || '';
+      }
+
+      product.options = await ProductStorage.findOneProductOptionById(
+        conn,
+        productId
+      );
+
+      const categories = await ProductStorage.findAllCategoryById(
+        conn,
+        productId
+      );
+
+      product.categories = categories.map((category) => category.category);
+
+      const images = await ProductStorage.findAllImageById(conn, productId);
+
+      product.images = images.map((image) => image.path);
+
+      return makeResponse(200, '상품 상세 조회', { product });
+    } catch (err) {
+      console.log(err);
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
   }
 
   async createProduct() {

@@ -2,22 +2,15 @@
 
 const Product = require('../../models/Product/Product');
 
+const processCtrl = require('../../util/processCtrl');
+
 const process = {
   createProduct: async (req, res) => {
     const product = new Product(req);
 
     const response = await product.createProduct();
 
-    if (response.status < 400) {
-      return res.status(response.status).json(response);
-    }
-    if (response.status < 500) {
-      return res.status(response.status).json(response);
-    }
-
-    delete response.err;
-
-    return res.status(response.status).json(response);
+    return processCtrl(res, response);
   },
 
   createProductImage: async (req, res) => {
@@ -25,16 +18,15 @@ const process = {
 
     const response = await product.createProductImage();
 
-    if (response.status < 400) {
-      return res.status(response.status).json(response);
-    }
-    if (response.status < 500) {
-      return res.status(response.status).json(response);
-    }
+    return processCtrl(res, response);
+  },
 
-    delete response.err;
+  findAllProductByBrand: async (req, res) => {
+    const product = new Product(req);
 
-    return res.status(response.status).json(response);
+    const response = await product.findAllProductByBrand();
+
+    return processCtrl(res, response);
   },
 };
 
