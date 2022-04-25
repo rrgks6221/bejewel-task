@@ -9,8 +9,6 @@ const ProductStorage = require('../models/Product/ProductStorage');
 module.exports = async (req, res, next) => {
   const conn = await pool.getConnection();
 
-  console.log(req.files);
-
   try {
     if (!req.files.image) {
       return res
