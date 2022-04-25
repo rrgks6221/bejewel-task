@@ -19,6 +19,18 @@ class Product {
     this.body = req.body;
   }
 
+  async findAllProduct() {
+    const conn = await pool.getConnection();
+
+    try {
+      const products = await ProductStorage.findAllProduct(conn);
+
+      return makeResponse(200, '전체 상품 조회', { products });
+    } catch (err) {
+      return Error.ctrl(err);
+    }
+  }
+
   async createProduct() {
     const conn = await pool.getConnection();
 
