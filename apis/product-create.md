@@ -14,7 +14,7 @@
 
 - Request
 
-**URL : /api/brand/brandId/product** ex)`/api/brand/1/product`<br>
+**URL : /api/brand/:brandId/product** ex)`/api/brand/1/product`<br>
 **Method : POST** <br>
 **Headers :** "Content-type" : "application/json; charset=utf-8"
 
