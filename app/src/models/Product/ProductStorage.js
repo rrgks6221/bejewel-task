@@ -263,7 +263,7 @@ class ProductStorage {
         SET name = ?, description = ?, price = ?, shipping_fee = ?, discount_rate = ?
         WHERE id = ?;`;
 
-      const isCreate = await conn.query(query, [
+      const isUpdate = await conn.query(query, [
         productBasicInfo.name,
         productBasicInfo.description,
         productBasicInfo.price,
@@ -272,7 +272,7 @@ class ProductStorage {
         productId,
       ]);
 
-      return isCreate[0].affectedRows;
+      return isUpdate[0].affectedRows;
     } catch (err) {
       throw createError(500, err);
     }
@@ -285,7 +285,7 @@ class ProductStorage {
         SET material = ?, color = ?, patten = ?, shape = ?, size = ?, weight = ?
         WHERE product_id = ?;`;
 
-      const isCreate = await conn.query(query, [
+      const isUpdate = await conn.query(query, [
         productMoreInfo.material,
         productMoreInfo.color,
         productMoreInfo.patten,
@@ -295,7 +295,7 @@ class ProductStorage {
         productId,
       ]);
 
-      return isCreate[0].affectedRows;
+      return isUpdate[0].affectedRows;
     } catch (err) {
       throw createError(500, err);
     }
@@ -307,9 +307,9 @@ class ProductStorage {
         DELETE FROM product_categories
         WHERE product_id = ?`;
 
-      const isCreate = await conn.query(query, [productId]);
+      const isDelete = await conn.query(query, [productId]);
 
-      return isCreate[0].affectedRows;
+      return isDelete[0].affectedRows;
     } catch (err) {
       throw createError(500, err);
     }
@@ -321,9 +321,23 @@ class ProductStorage {
         DELETE FROM product_options
         WHERE product_id = ?`;
 
-      const isCreate = await conn.query(query, [productId]);
+      const isDelete = await conn.query(query, [productId]);
 
-      return isCreate[0].affectedRows;
+      return isDelete[0].affectedRows;
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async deleteProductImageById(conn, productId) {
+    try {
+      const query = `
+        DELETE FROM product_images
+        WHERE product_id = ?`;
+
+      const isDelete = await conn.query(query, [productId]);
+
+      return isDelete[0].affectedRows;
     } catch (err) {
       throw createError(500, err);
     }

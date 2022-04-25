@@ -2,6 +2,7 @@
 
 const _ = require('lodash');
 const crypto = require('crypto');
+const fs = require('fs');
 const pool = require('../../config/db');
 
 const ProductStorage = require('../models/Product/ProductStorage');
@@ -30,6 +31,19 @@ module.exports = async (req, res, next) => {
         .status(404)
         .json({ success: false, msg: '존재하지 않는 상품입니다.' });
     }
+
+    const savedImages = await ProductStorage.findAllImageById(conn, productId);
+
+    savedImages.forEach((image) => {
+      fs.unlink(`./${image.path}`, (err) => {
+        if (err) {
+          console.log(err);
+          return res
+            .status(500)
+            .json('서버 에러입니다. 서버 개발자에게 문의해주세요');
+        }
+      });
+    });
 
     const imagePaths = [];
 

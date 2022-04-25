@@ -400,6 +400,37 @@ class Product {
       conn.release();
     }
   }
+
+  async deleteProductImageById() {
+    const conn = await pool.getConnection();
+
+    try {
+      const images = ProductModule.getToSaveImages(
+        this.params.productId,
+        this.body.images
+      );
+
+      const isDelete = ProductStorage.deleteProductImageById(
+        conn,
+        this.params.productId
+      );
+
+      if (!isDelete) {
+        throw createError(502, 'Bad GateWay');
+      }
+
+      const isCreate = await ProductStorage.createProductImages(conn, images);
+
+      if (isCreate !== images.length) {
+        throw createError(502, 'Bad GateWay');
+      }
+      return makeResponse(201, '이미지 수정에 성공했습니다.');
+    } catch (err) {
+      return Error.ctrl(err);
+    } finally {
+      conn.release();
+    }
+  }
 }
 
 module.exports = Product;
