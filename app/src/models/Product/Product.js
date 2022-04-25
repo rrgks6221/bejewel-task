@@ -35,6 +35,22 @@ class Product {
     }
   }
 
+  async findAllProductByBrand() {
+    const conn = await pool.getConnection();
+
+    try {
+      const products = await ProductStorage.findAllProductByBrand(
+        conn,
+        this.params.brandId,
+        this.query.category
+      );
+
+      return makeResponse(200, '카테고리별 상품 조회', { products });
+    } catch (err) {
+      return Error.ctrl(err);
+    }
+  }
+
   async createProduct() {
     const conn = await pool.getConnection();
 

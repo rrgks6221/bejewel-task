@@ -40,11 +40,39 @@ class ProductStorage {
       if (category) {
         query += `
           JOIN product_categories
-          ON product_categories.product_category_list_id = ?
+          ON product_categories.product_category_list_id = ${category}
           WHERE products.id = product_categories.product_id;`;
       }
 
-      const products = await conn.query(query, [category]);
+      const products = await conn.query(query);
+
+      return products[0];
+    } catch (err) {
+      console.log(err);
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllProductByBrand(conn, brandId, category) {
+    try {
+      let query = `
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
+        JOIN brands
+        ON brands.id = brand_id`;
+
+      if (brandId) {
+        if (category) {
+          query += `
+            JOIN product_categories
+            ON product_categories.product_category_list_id = ${category}
+            WHERE products.brand_id = ${brandId} AND products.id = product_categories.product_id;`;
+        } else {
+          query += `
+            WHERE products.brand_id = ${brandId}`;
+        }
+      }
+
+      const products = await conn.query(query);
 
       return products[0];
     } catch (err) {

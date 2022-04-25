@@ -20,6 +20,14 @@ const process = {
 
     return processCtrl(res, response);
   },
+
+  findAllProductByBrand: async (req, res) => {
+    const product = new Product(req);
+
+    const response = await product.findAllProductByBrand();
+
+    return processCtrl(res, response);
+  },
 };
 
 module.exports = process;

@@ -8,6 +8,8 @@ const imageSave = require('../../midlleWares/imageSave');
 
 const ctrl = require('./brand.ctrl');
 
+router.get('/:brandId', ctrl.findAllProductByBrand);
+
 router.post('/:brandId/product', ctrl.createProduct);
 router.post('/:brandId/product/:productId', imageSave, ctrl.createProductImage);
 
