@@ -30,6 +30,135 @@ class ProductStorage {
     }
   }
 
+  static async findAllProductByCategory(conn, category) {
+    try {
+      let query = `
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate,
+        (SELECT path FROM product_images WHERE product_id = products.id LIMIT 1) AS imagePath
+        FROM products
+        JOIN brands
+        ON brands.id = brand_id`;
+
+      if (category) {
+        query += `
+          JOIN product_categories
+          ON product_categories.product_category_list_id = ${category}
+          WHERE products.id = product_categories.product_id;`;
+      }
+
+      const products = await conn.query(query);
+
+      return products[0];
+    } catch (err) {
+      console.log(err);
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllProductByBrand(conn, brandId, category) {
+    try {
+      let query = `
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate,
+        (SELECT path FROM product_images WHERE product_id = products.id LIMIT 1) AS imagePath
+        FROM products
+        JOIN brands
+        ON brands.id = brand_id`;
+
+      if (brandId) {
+        if (category) {
+          query += `
+            JOIN product_categories
+            ON product_categories.product_category_list_id = ${category}
+            WHERE products.brand_id = ${brandId} AND products.id = product_categories.product_id;`;
+        } else {
+          query += `
+            WHERE products.brand_id = ${brandId}`;
+        }
+      }
+
+      const products = await conn.query(query);
+
+      return products[0];
+    } catch (err) {
+      console.log(err);
+      throw createError(500, err);
+    }
+  }
+
+  static async findOneProductBasicById(conn, id) {
+    try {
+      const query = `
+        SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
+        JOIN brands
+        ON brands.id = brand_id
+        WHERE products.id = ?`;
+
+      const product = await conn.query(query, [id]);
+
+      return product[0][0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findOneProductMoreInfoById(conn, id) {
+    try {
+      const query = `
+        SELECT material, color, patten, shape, size, weight FROM product_more_informations
+        WHERE product_id = ?`;
+
+      const product = await conn.query(query, [id]);
+
+      return product[0][0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findOneProductOptionById(conn, id) {
+    try {
+      const query = `
+        SELECT option_name AS optionName, add_price AS addPrice FROM product_options
+        WHERE product_id = ?`;
+
+      const option = await conn.query(query, [id]);
+
+      return option[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllCategoryById(conn, id) {
+    try {
+      const query = `
+        SELECT category FROM product_category_list
+        JOIN product_categories
+        ON product_categories.product_id = ?
+        WHERE product_categories.product_category_list_id = product_category_list.id`;
+
+      const categories = await conn.query(query, [id]);
+
+      return categories[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
+  static async findAllImageById(conn, id) {
+    try {
+      const query = `
+        SELECT path FROM product_images
+        WHERE product_id = ?`;
+
+      const images = await conn.query(query, [id]);
+
+      return images[0];
+    } catch (err) {
+      throw createError(500, err);
+    }
+  }
+
   static async createProductBasic(conn, brandId, productBasicInfo) {
     try {
       const query = `

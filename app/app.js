@@ -13,8 +13,12 @@ app.use(fileUpload({ createParentPath: true }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-const product = require('./src/apis/brand');
+const brand = require('./src/apis/brand');
+const product = require('./src/apis/product');
+const images = require('./src/apis/images');
 
-app.use('/api/brand', product);
+app.use('/images', images);
+app.use('/api/product', product);
+app.use('/api/brand', brand);
 
 module.exports = app;
