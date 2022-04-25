@@ -16,16 +16,20 @@ class Product {
   constructor(req) {
     this.req = req;
     this.params = req.params;
+    this.query = req.query;
     this.body = req.body;
   }
 
-  async findAllProduct() {
+  async findAllProductByCategory() {
     const conn = await pool.getConnection();
 
     try {
-      const products = await ProductStorage.findAllProduct(conn);
+      const products = await ProductStorage.findAllProductByCategory(
+        conn,
+        this.query.category
+      );
 
-      return makeResponse(200, '전체 상품 조회', { products });
+      return makeResponse(200, '카테고리별 상품 조회', { products });
     } catch (err) {
       return Error.ctrl(err);
     }

@@ -30,14 +30,21 @@ class ProductStorage {
     }
   }
 
-  static async findAllProduct(conn) {
+  static async findAllProductByCategory(conn, category) {
     try {
-      const query = `
+      let query = `
         SELECT products.id, brand_id AS brandId, brands.name AS brandName, products.name, description, price, shipping_fee AS shippingFee, discount_rate AS discountRate FROM products
         JOIN brands
         ON brands.id = brand_id`;
 
-      const products = await conn.query(query);
+      if (category) {
+        query += `
+          JOIN product_categories
+          ON product_categories.product_category_list_id = ?
+          WHERE products.id = product_categories.product_id;`;
+      }
+
+      const products = await conn.query(query, [category]);
 
       return products[0];
     } catch (err) {

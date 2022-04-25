@@ -5,10 +5,10 @@ const Product = require('../../models/Product/Product');
 const processCtrl = require('../../util/processCtrl');
 
 const process = {
-  findAllProduct: async (req, res) => {
+  findAllProductByCategory: async (req, res) => {
     const product = new Product(req);
 
-    const response = await product.findAllProduct();
+    const response = await product.findAllProductByCategory();
 
     return processCtrl(res, response);
   },
