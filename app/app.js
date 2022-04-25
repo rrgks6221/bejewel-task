@@ -11,4 +11,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+const product = require('./src/apis/product');
+
+app.use('/api/brand', product);
+
 module.exports = app;
